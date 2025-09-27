@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator BMI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .form-group input:invalid {
+            border-color: #e74c3c;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e1e1e1;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .bmi-value {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .bmi-category {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .bmi-description {
+            font-size: 1em;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Warna untuk kategori BMI */
+        .underweight {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+
+        .normal {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+        }
+
+        .overweight {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+        }
+
+        .obese {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e1e1;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .bmi-table {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .bmi-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+
+        .bmi-table th,
+        .bmi-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .bmi-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Kalkulator BMI</h1>
+            <p>Hitung Body Mass Index Anda dengan mudah</p>
+        </div>
+
+        <form id="bmiForm">
+            <div class="form-group">
+                <label for="weight">Berat Badan (kg)</label>
+                <input type="number" id="weight" min="1" max="300" step="0.1" placeholder="Contoh: 70" required>
+            </div>
+
+            <div class="form-group">
+                <label for="height">Tinggi Badan (cm)</label>
+                <input type="number" id="height" min="50" max="250" step="0.1" placeholder="Contoh: 170" required>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Hitung BMI</button>
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+            </div>
+        </form>
+
+        <div id="result" class="result">
+            <h3>Hasil Perhitungan BMI</h3>
+            <div id="bmiValue" class="bmi-value"></div>
+            <div id="bmiCategory" class="bmi-category"></div>
+            <div id="bmiDescription" class="bmi-description"></div>
+        </div>
+
+        <div class="bmi-table">
+            <h4>Kategori BMI:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kategori</th>
+                        <th>BMI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Underweight</td>
+                        <td>&lt; 18.5</td>
+                    </tr>
+                    <tr>
+                        <td>Normal</td>
+                        <td>18.5 - 24.9</td>
+                    </tr>
+                    <tr>
+                        <td>Overweight</td>
+                        <td>25.0 - 29.9</td>
+                    </tr>
+                    <tr>
+                        <td>Obese</td>
+                        <td>≥ 30.0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>BMI adalah indikator umum. Konsultasikan dengan dokter untuk penilaian kesehatan yang lebih akurat.</p>
+        </div>
+    </div>
+
+    <script>
+        // Event listener untuk form submission
+        document.getElementById('bmiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateBMI();
+        });
+
+        // Fungsi untuk menghitung BMI
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+
+            // Validasi input
+            if (!weight || !height || weight <= 0 || height <= 0) {
+                showResult('error', 'Error!', 'Mohon masukkan nilai yang valid untuk berat dan tinggi badan.');
+                return;
+            }
+
+            // Konversi tinggi dari cm ke meter
+            const heightInMeters = height / 100;
+
+            // Hitung BMI
+            const bmi = weight / (heightInMeters * heightInMeters);
+
+            // Tentukan kategori dan deskripsi
+            let category, categoryClass, description;
+
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                categoryClass = 'underweight';
+                description = 'BMI Anda menunjukkan berat badan kurang. Disarankan untuk meningkatkan asupan nutrisi dan konsultasi dengan ahli gizi untuk program penambahan berat badan yang sehat.';
+            } else if (bmi >= 18.5 && bmi <= 24.9) {
+                category = 'Normal';
+                categoryClass = 'normal';
+                description = 'Selamat! BMI Anda berada dalam kategori normal. Pertahankan pola makan sehat dan olahraga teratur untuk menjaga berat badan ideal Anda.';
+            } else if (bmi >= 25 && bmi <= 29.9) {
+                category = 'Overweight';
+                categoryClass = 'overweight';
+                description = 'BMI Anda menunjukkan kelebihan berat badan. Disarankan untuk mengurangi kalori dan meningkatkan aktivitas fisik. Konsultasikan dengan dokter untuk program diet yang tepat.';
+            } else {
+                category = 'Obese';
+                categoryClass = 'obese';
+                description = 'BMI Anda menunjukkan obesitas. Sangat disarankan untuk berkonsultasi dengan dokter segera untuk mendapatkan program penurunan berat badan yang aman dan efektif.';
+            }
+
+            // Tampilkan hasil
+            showResult(categoryClass, bmi.toFixed(1), category, description);
+        }
+
+        // Fungsi untuk menampilkan hasil
+        function showResult(categoryClass, bmiValue, category, description) {
+            const resultDiv = document.getElementById('result');
+            const bmiValueDiv = document.getElementById('bmiValue');
+            const bmiCategoryDiv = document.getElementById('bmiCategory');
+            const bmiDescriptionDiv = document.getElementById('bmiDescription');
+
+            // Reset classes
+            resultDiv.className = 'result show ' + categoryClass;
+
+            if (categoryClass === 'error') {
+                bmiValueDiv.textContent = '';
+                bmiCategoryDiv.textContent = bmiValue; // bmiValue berisi pesan error
+                bmiDescriptionDiv.textContent = description;
+            } else {
+                bmiValueDiv.textContent = bmiValue;
+                bmiCategoryDiv.textContent = category;
+                bmiDescriptionDiv.textContent = description;
+            }
+
+            // Scroll ke hasil
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Fungsi untuk reset form
+        function resetForm() {
+            document.getElementById('bmiForm').reset();
+            document.getElementById('result').classList.remove('show');
+        }
+
+        // Auto-focus pada input pertama saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('weight').focus();
+        });
+
+        // Validasi input saat user mengetik
+        document.getElementById('weight').addEventListener('input', function() {
+            validateInput(this);
+        });
+
+        document.getElementById('height').addEventListener('input', function() {
+            validateInput(this);
+        });
+
+        function validateInput(input) {
+            const value = parseFloat(input.value);
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+
+            if (value < min || value > max) {
+                input.style.borderColor = '#e74c3c';
+            } else {
+                input.style.borderColor = '#e1e1e1';
+            }
+        }
+    </script>
+</body>
+</html>
